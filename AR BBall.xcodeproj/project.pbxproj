@@ -15,6 +15,7 @@
 		34A6B18521DA1F8D0083D97E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34A6B18321DA1F8D0083D97E /* LaunchScreen.storyboard */; };
 		34A6B19021DA1F8D0083D97E /* AR_BBallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A6B18F21DA1F8D0083D97E /* AR_BBallTests.swift */; };
 		34A6B19B21DA1F8D0083D97E /* AR_BBallUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A6B19A21DA1F8D0083D97E /* AR_BBallUITests.swift */; };
+		34A6B1A921DA26190083D97E /* AddGameObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A6B1A821DA26190083D97E /* AddGameObjects.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		34A6B19621DA1F8D0083D97E /* AR BBallUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AR BBallUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		34A6B19A21DA1F8D0083D97E /* AR_BBallUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AR_BBallUITests.swift; sourceTree = "<group>"; };
 		34A6B19C21DA1F8D0083D97E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		34A6B1A821DA26190083D97E /* AddGameObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGameObjects.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				34A6B18121DA1F8D0083D97E /* Assets.xcassets */,
 				34A6B18321DA1F8D0083D97E /* LaunchScreen.storyboard */,
 				34A6B18621DA1F8D0083D97E /* Info.plist */,
+				34A6B1A821DA26190083D97E /* AddGameObjects.swift */,
 			);
 			path = "AR BBall";
 			sourceTree = "<group>";
@@ -260,6 +263,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34A6B1A921DA26190083D97E /* AddGameObjects.swift in Sources */,
 				34A6B17D21DA1F8B0083D97E /* ViewController.swift in Sources */,
 				34A6B17921DA1F8B0083D97E /* AppDelegate.swift in Sources */,
 			);
@@ -439,6 +443,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A8SA62ZA26;
 				INFOPLIST_FILE = "AR BBall/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -446,7 +451,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Demistry.AR-BBall";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -457,6 +462,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A8SA62ZA26;
 				INFOPLIST_FILE = "AR BBall/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -464,7 +470,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Demistry.AR-BBall";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

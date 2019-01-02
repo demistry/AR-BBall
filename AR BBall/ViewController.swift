@@ -13,6 +13,8 @@ import ARKit
 class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet weak var startGameBtn: UIButton!
+    var isBoardPlaced : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,12 +24,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
+        //sceneView.debugOptions = [.showFeaturePoints, .showWorldOrigin]
         
         // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        //let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        let scene = SCNScene()
         
         // Set the scene to the view
         sceneView.scene = scene
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(throwBall))
+        sceneView.addGestureRecognizer(tapGestureRecognizer)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,29 +54,53 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
 
-    // MARK: - ARSCNViewDelegate
-    
-/*
-    // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
-    }
-*/
-    
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
+    @IBAction func startGame(_ sender: UIButton) {
+        startGameBtn.isHidden = true
+        
         
     }
     
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
+    @objc func throwBall(gestureRecognizer : UITapGestureRecognizer){
+        
+        guard let sceneView = gestureRecognizer.view as? ARSCNView else{
+            return
+        }
+        
+        guard let centerPoint = self.sceneView.pointOfView?.transform else{
+            return
+        }
+        
+        if isBoardPlaced{
+            
+        } else{
+            guard let basketBallScene = SCNScene(named: "art.scnassets/hoop.scn") else{
+                print("Scene not found")
+                return
+            }
+            guard let basketBallNode = basketBallScene.rootNode.childNode(withName: "backboard", recursively: false) else{
+                print("couldnt find backboard node")
+                return
+            }
+            
+            
+            
+            //basketBallNode.position = getCameraPosition(centerPoint: centerPoint)
+            sceneView.debugOptions = [.showWorldOrigin]
+            basketBallNode.position = SCNVector3(0,0,-3)
+            sceneView.scene.rootNode.addChildNode(basketBallNode)
+            isBoardPlaced = true
+        }
+        
+        
         
     }
     
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
+    func getCameraPosition(centerPoint : SCNMatrix4)->SCNVector3{
+        //let camMatrix = SCNMatrix4(sceneView.session.currentFrame!.camera.transform)
+        let camOrientation = SCNVector3(-centerPoint.m31, -centerPoint.m32, -centerPoint.m33)
+        let camLocation = SCNVector3(centerPoint.m41, centerPoint.m42, centerPoint.m43)
         
+        return SCNVector3Make(camOrientation.x + camLocation.x, camLocation.y + camOrientation.y, camOrientation.z + camLocation.z)
     }
+    
 }
