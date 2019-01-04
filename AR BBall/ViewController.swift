@@ -72,6 +72,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         if isBoardPlaced{
             
+            let basketBall = SCNNode(geometry: SCNSphere(radius: 0.15))
+            basketBall.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "basketskin")
+            basketBall.position = getCameraPosition(centerPoint: centerPoint)
+            
+            //let direction = SCNVector3(-centerPoint.m31, -centerPoint.m32, -centerPoint.m33)
+            let physicsShape = SCNPhysicsShape(node: basketBall, options: nil)
+            let physicsBody = SCNPhysicsBody(type: .dynamic, shape: physicsShape)
+            basketBall.physicsBody = physicsBody
+            let position = getCameraPosition(centerPoint: centerPoint)
+            basketBall.physicsBody?.applyForce(SCNVector3(position.x * 6, position.y * 6, position.z * 6), asImpulse: true)
+            
+            self.sceneView.scene.rootNode.addChildNode(basketBall)
         } else{
             guard let basketBallScene = SCNScene(named: "art.scnassets/hoop.scn") else{
                 print("Scene not found")
@@ -82,18 +94,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 return
             }
             
-            
-            
-            //basketBallNode.position = getCameraPosition(centerPoint: centerPoint)
+            let action = SCNAction.move(by: SCNVector3(-2, 0, 0), duration: 2)
+            let rightAction = SCNAction.move(by: SCNVector3(2,0,0), duration: 2)
+            let actionSequence = SCNAction.sequence([action, rightAction])
+            let forever = SCNAction.repeatForever(actionSequence)
             sceneView.debugOptions = [.showWorldOrigin]
+            basketBallNode.runAction(forever)
             basketBallNode.position = SCNVector3(0,0,-3)
             sceneView.scene.rootNode.addChildNode(basketBallNode)
             isBoardPlaced = true
         }
         
-        
-        
     }
+    
+    
     
     func getCameraPosition(centerPoint : SCNMatrix4)->SCNVector3{
         //let camMatrix = SCNMatrix4(sceneView.session.currentFrame!.camera.transform)
