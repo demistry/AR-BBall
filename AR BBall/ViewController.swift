@@ -10,11 +10,13 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate , ARSessionDelegate{
 
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var startGameBtn: UIButton!
     var isBoardPlaced : Bool = false
+    var trackedCameraPositionTransform : SCNMatrix4?
+    let configuration = ARWorldTrackingConfiguration()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,10 +43,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.viewWillAppear(animated)
         
         // Create a session configuration
-        let configuration = ARWorldTrackingConfiguration()
+        
+        
+        configuration.planeDetection = .vertical
 
         // Run the view's session
         sceneView.session.run(configuration)
+        sceneView.session.delegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -85,6 +90,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             self.sceneView.scene.rootNode.addChildNode(basketBall)
         } else{
+            sceneView.session.pause()
+            sceneView.scene.rootNode.enumerateHierarchy { (node, stop) in
+                node.removeFromParentNode()
+            }
+            sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
             guard let basketBallScene = SCNScene(named: "art.scnassets/hoop.scn") else{
                 print("Scene not found")
                 return
@@ -93,19 +103,53 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 print("couldnt find backboard node")
                 return
             }
-            
-            let action = SCNAction.move(by: SCNVector3(-2, 0, 0), duration: 2)
-            let rightAction = SCNAction.move(by: SCNVector3(2,0,0), duration: 2)
+
+            let action = SCNAction.move(by: SCNVector3(-2, 0, 0), duration: 4)
+            let rightAction = SCNAction.move(by: SCNVector3(2,0,0), duration: 4)
             let actionSequence = SCNAction.sequence([action, rightAction])
             let forever = SCNAction.repeatForever(actionSequence)
-            sceneView.debugOptions = [.showWorldOrigin]
+            //sceneView.debugOptions = [.showWorldOrigin]
             basketBallNode.runAction(forever)
-            basketBallNode.position = SCNVector3(0,0,-3)
+            basketBallNode.position = SCNVector3(0,-0.2,-3)
             sceneView.scene.rootNode.addChildNode(basketBallNode)
             isBoardPlaced = true
+//            let taplocation = gestureRecognizer.location(in: sceneView)
+//            let hittest = sceneView.hitTest(taplocation, types: .existingPlaneUsingExtent)
+//            if !hittest.isEmpty{
+//                print("Touched a vertical surface")
+//                self.addBackboardToView(hitTest: hittest.first!)
+//
+//            }
         }
         
     }
+    
+    
+    func addBackboardToView(hitTest :ARHitTestResult){
+//        guard let basketBallScene = SCNScene(named: "art.scnassets/hoop.scn") else{
+//            print("Scene not found")
+//            return
+//        }
+//        guard let basketBallNode = basketBallScene.rootNode.childNode(withName: "backboard", recursively: false) else{
+//            print("couldnt find backboard node")
+//            return
+//        }
+//
+//        let hitTestTransformColumn = hitTest.worldTransform.columns.3
+//
+//        let action = SCNAction.move(by: SCNVector3(-2, 0, 0), duration: 4)
+//        let rightAction = SCNAction.move(by: SCNVector3(2,0,0), duration: 4)
+//        let actionSequence = SCNAction.sequence([action, rightAction])
+//        let forever = SCNAction.repeatForever(actionSequence)
+//        //sceneView.debugOptions = [.showWorldOrigin]
+//        //let invisible
+//        basketBallNode.runAction(forever)
+//        basketBallNode.position = getCameraPosition(centerPoint: self.tr)
+//        //basketBallNode.eulerAngles = SCNVector3(0, 0, 0)
+//        sceneView.scene.rootNode.addChildNode(basketBallNode)
+//        //isBoardPlaced = true
+    }
+    
     
     
     
@@ -117,4 +161,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         return SCNVector3Make(camOrientation.x + camLocation.x, camLocation.y + camOrientation.y, camOrientation.z + camLocation.z)
     }
     
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor  = anchor as? ARPlaneAnchor else{
+            return
+        }
+        
+        print("vertical anchor added")
+        
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor  = anchor as? ARPlaneAnchor else{
+            return
+        }
+        print("vertical anchor updated")
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor  = anchor as? ARPlaneAnchor else{
+            return
+        }
+        print("vertical anchor removed")
+    }
 }
