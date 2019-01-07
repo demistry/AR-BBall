@@ -166,15 +166,17 @@ class ViewController: UIViewController, ARSCNViewDelegate , ARSessionDelegate{
             return
         }
         
+        if !isBoardPlaced{
+            guard let planeAnchor  = anchor as? ARPlaneAnchor else{
+                return
+            }
+            let startNode = SCNNode(geometry: SCNPlane(width: 0.8, height: 0.8))
+            startNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "start")
+            startNode.position = SCNVector3(planeAnchor.center.x, planeAnchor.center.y, planeAnchor.center.z-1)
+            self.sceneView.scene.rootNode.addChildNode(startNode)
+        }
         print("vertical anchor added")
         
-    }
-    
-    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        guard let planeAnchor  = anchor as? ARPlaneAnchor else{
-            return
-        }
-        print("vertical anchor updated")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
@@ -182,5 +184,11 @@ class ViewController: UIViewController, ARSCNViewDelegate , ARSessionDelegate{
             return
         }
         print("vertical anchor removed")
+    }
+}
+
+extension Int{
+    var degreeToRadians : Double {
+        return Double(self) * .pi/180
     }
 }
